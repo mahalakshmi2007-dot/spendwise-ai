@@ -1,0 +1,26 @@
+/* SpendWise AI
+   App-specific styles
+   Main layout styles are in index.css
+*/
+
+#root {
+  min-height: 100vh;
+  width: 100%;
+}
+
+.app-shell {
+  width: 100%;
+}
+
+button {
+  font-family: inherit;
+}
+
+input {
+  font-family: inherit;
+}
+
+::selection {
+  background: #c7d2fe;
+  color: #312e81;
+}
