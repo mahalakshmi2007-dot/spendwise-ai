@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import "./index.css";
 
-const API = "http://127.0.0.1:8000";
+const API = "https://spendwise-ai-daj4.onrender.com";
 const MONTHLY_BUDGET = 15000;
 
 type Expense = {
