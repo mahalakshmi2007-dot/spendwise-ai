@@ -1,58 +1,101 @@
 # 💰 SpendWise AI
 
-An AI-powered personal finance management application that helps users track expenses, analyze spending patterns, forecast future expenses, detect unusual transactions, and generate personalized financial insights.
+**SpendWise AI** is a personal expense management and financial analysis application that helps users record expenses, understand spending patterns, and receive machine-learning-based insights.
 
-## 🚀 Features
+The application combines **expense tracking, automatic category prediction, anomaly detection, spending insights, and monthly forecasting** in a simple dashboard.
 
-* 📊 **Expense Dashboard** — View spending summaries and recent transactions.
-* ➕ **Expense Management** — Add and manage daily expenses.
-* 🤖 **AI Expense Categorization** — Predict expense categories from descriptions using Machine Learning.
-* 📈 **Spending Forecast** — Predict next month's spending using historical expense data.
-* 🚨 **Anomaly Detection** — Identify unusual or potentially abnormal expenses.
-* 💡 **AI Insights** — Generate automatic insights from spending and budget data.
-* 💰 **Budget Tracking** — Monitor monthly spending against a defined budget.
-* 🔄 **Live Dashboard Updates** — Refresh the dashboard to view updated financial data.
+🔗 **Live Demo:** https://spendwise-ai-lake.vercel.app/
+
+---
+
+## ✨ Features
+
+### 📊 Expense Management
+
+* Add and store daily expenses
+* Track amount, description, category, payment method, and date
+* View recorded expenses in the dashboard
+
+### 🤖 AI Category Prediction
+
+* Predicts an expense category from its description
+* Uses **TF-IDF and Logistic Regression**
+* Provides the predicted category, confidence, and probability distribution
+
+**Example:**
+
+`Chicken biryani → Food`
+
+### 🚨 Anomaly Detection
+
+* Identifies unusual expenses using **Isolation Forest**
+* Considers expense amount, date information, and category-level spending
+* Displays the most unusual expenses with anomaly scores
+
+### 📈 Monthly Forecast
+
+* Analyzes monthly spending history
+* Provides a projected spending amount for the next month
+* Handles insufficient historical data instead of generating a misleading trend
+
+### 💡 Spending Insights
+
+Generates useful insights such as:
+
+* Monthly budget status
+* Highest spending category
+* Average transaction amount
+* Spending stability
+* Unusual expenses
+* Forecast information
+
+### 🎨 Dashboard
+
+* Clean and responsive web interface
+* Expense overview
+* Budget information
+* Forecast
+* Anomaly detection
+* AI-generated insights
+* Category prediction
+
+---
 
 ## 🧠 Machine Learning
 
-SpendWise AI uses multiple Machine Learning techniques:
+SpendWise AI currently uses the following machine-learning techniques:
 
-### 1. Expense Category Prediction
+| Feature             | Technique                        |
+| ------------------- | -------------------------------- |
+| Category Prediction | TF-IDF + Logistic Regression     |
+| Anomaly Detection   | Isolation Forest                 |
+| Spending Forecast   | Monthly spending analysis        |
+| Insights            | Rule-based + ML-derived analysis |
 
-* TF-IDF Vectorization
-* Logistic Regression
-* Predicts categories such as:
+### Category Prediction
 
-  * Food
-  * Groceries
-  * Shopping
-  * Transport
-  * Education
-  * Health
-  * Utilities
-  * Entertainment
+The category prediction model is trained on labeled expense descriptions and categories.
 
-### 2. Spending Forecast
+For example:
 
-* Linear Regression
-* Uses historical monthly spending to estimate the next month's total.
+```text
+Input:  chicken biryani
+Output: Food
+```
 
-### 3. Anomaly Detection
+The prediction API also returns probability values for the available categories.
 
-* Isolation Forest
-* Detects unusual expense transactions based on spending patterns.
+### Anomaly Detection
 
-### 4. AI Insights
+Isolation Forest is used to identify expenses that appear unusual compared with the user's expense history.
 
-The application generates insights about:
+The system requires a minimum number of expenses before running anomaly detection.
 
-* Monthly spending
-* Budget usage
-* Highest spending category
-* Average transaction amount
-* Spending trend
-* Forecasted spending
-* Unusual expenses
+### Forecasting
+
+The forecasting module analyzes monthly expense totals. When only one month of data is available, the system reports insufficient historical data and uses the available month's spending as a simple continuation estimate.
+
+---
 
 ## 🛠️ Tech Stack
 
@@ -69,159 +112,216 @@ The application generates insights about:
 * FastAPI
 * Uvicorn
 * SQLAlchemy
-* SQLite
 
 ### Machine Learning
 
 * Scikit-learn
 * NumPy
-* Joblib
 
-## 📁 Project Structure
+### Database
+
+* SQLite
+
+### Deployment
+
+* Vercel — Frontend
+* Render — Backend
+
+---
+
+## 🏗️ Project Architecture
 
 ```text
-spendwise-ai/
+SpendWise AI
 │
-├── backend/
-│   ├── app/
-│   │   ├── ml/
-│   │   │   ├── anomaly_detector.py
-│   │   │   ├── category_predictor.py
-│   │   │   ├── forecasting.py
-│   │   │   └── insights.py
-│   │   │
-│   │   ├── routes/
-│   │   ├── crud.py
-│   │   ├── database.py
-│   │   ├── main.py
-│   │   ├── models.py
-│   │   └── schemas.py
-│   │
-│   ├── requirements.txt
-│   └── seed.py
+├── Frontend
+│   ├── React
+│   ├── TypeScript
+│   └── Vite
 │
-├── src/
-│   ├── App.tsx
-│   ├── App.css
-│   ├── index.css
-│   └── main.tsx
+├── Backend
+│   ├── FastAPI
+│   ├── SQLAlchemy
+│   └── SQLite
 │
-├── public/
-├── package.json
-├── vite.config.ts
-├── README.md
-└── .gitignore
+└── Machine Learning
+    ├── TF-IDF
+    ├── Logistic Regression
+    ├── Isolation Forest
+    └── Forecasting
 ```
 
-## ⚙️ Installation
+### Application Flow
+
+```text
+User
+  │
+  ▼
+React Frontend
+  │
+  ▼
+FastAPI Backend
+  │
+  ├── Expense Management
+  │
+  ├── SQLite Database
+  │
+  └── Machine Learning
+        │
+        ├── Category Prediction
+        ├── Anomaly Detection
+        ├── Forecast
+        └── Insights
+```
+
+---
+
+## 🔌 API Endpoints
+
+The backend provides REST API endpoints for the main application features.
+
+| Endpoint               | Method | Purpose                             |
+| ---------------------- | ------ | ----------------------------------- |
+| `/expenses`            | GET    | Retrieve expenses                   |
+| `/expenses`            | POST   | Add an expense                      |
+| `/ml/train`            | POST   | Train the category prediction model |
+| `/ml/predict-category` | POST   | Predict an expense category         |
+| `/ml/anomalies`        | GET    | Detect unusual expenses             |
+| `/ml/forecast`         | GET    | Generate spending forecast          |
+| `/ml/insights`         | GET    | Generate spending insights          |
+
+Interactive API documentation is available through FastAPI/Swagger when the backend is running.
+
+---
+
+## 🚀 Local Setup
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/mahalakshmi2007-dot/spendwise-ai.git
+git clone <YOUR_GITHUB_REPOSITORY_URL>
 cd spendwise-ai
 ```
 
-### 2. Frontend setup
+### 2. Create a virtual environment
 
 ```bash
-npm install
-npm run dev
-```
-
-Frontend runs on:
-
-```text
-http://localhost:5173
-```
-
-### 3. Backend setup
-
-Open another terminal:
-
-```bash
-cd backend
 python -m venv venv
 ```
 
-Activate the virtual environment on Windows:
+### 3. Activate the virtual environment
 
-```powershell
+**Windows:**
+
+```bash
 venv\Scripts\activate
 ```
 
-Install dependencies:
+### 4. Install backend dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Start the backend:
+### 5. Start the FastAPI backend
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-Backend runs on:
+The backend will be available at:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-API documentation:
+Swagger API documentation:
 
 ```text
 http://127.0.0.1:8000/docs
 ```
 
-## 🔌 Main API Endpoints
+### 6. Start the frontend
 
-| Method | Endpoint               | Purpose                          |
-| ------ | ---------------------- | -------------------------------- |
-| POST   | `/ml/train`            | Train the expense category model |
-| POST   | `/ml/predict-category` | Predict an expense category      |
-| GET    | `/ml/forecast`         | Forecast next month's spending   |
-| GET    | `/ml/anomalies`        | Detect unusual expenses          |
-| GET    | `/ml/insights`         | Generate financial insights      |
+Install frontend dependencies:
 
-## 🧪 ML Testing
-
-The implemented ML features were tested through the FastAPI Swagger documentation.
-
-Example:
-
-```text
-"chicken biryani" → Food
-"electricity bill" → Utilities
+```bash
+npm install
 ```
 
-The ML endpoints returned successful `200 OK` responses during testing.
+Then start the development server:
 
-## 🎯 Project Goal
+```bash
+npm run dev
+```
 
-SpendWise AI was developed as a practical project to combine:
+---
 
-* Web Development
-* Data Analysis
-* Machine Learning
-* Database Management
-* REST API Development
-* Financial Data Visualization
+## 📌 Current ML Model Status
 
-The goal is to provide a simple interface for understanding personal spending patterns and making data-driven financial observations.
+The deployed category prediction model has been trained on **159 samples across 10 categories** during the current training run.
 
-## 👩‍💻 Developer
+For example:
+
+```text
+Input:
+chicken biryani
+
+Prediction:
+Food
+
+Confidence:
+40.9%
+```
+
+The confidence value represents the model's estimated probability for its predicted category and should not be interpreted as guaranteed correctness.
+
+---
+
+## ⚠️ Current Limitations
+
+* Forecast quality improves with more historical monthly data.
+* Category prediction confidence can vary depending on the expense description.
+* SQLite is currently suitable for this academic/demo deployment but is not intended as a production-scale persistent database.
+* The ML model should be retrained when the underlying training data is updated.
+
+---
+
+## 🔮 Future Improvements
+
+* User authentication and multiple user accounts
+* Persistent production database such as PostgreSQL
+* Improved category prediction with a larger and cleaner dataset
+* More historical data for forecasting
+* Advanced financial visualizations
+* Custom monthly budgets
+* Export expenses to CSV/Excel
+* Improved mobile responsiveness
+* More personalized financial recommendations
+
+---
+
+## 🎓 Project Purpose
+
+SpendWise AI was developed as an academic/personal project to explore the practical use of **Python, FastAPI, SQL databases, React, and machine learning** in a real-world expense management application.
+
+The project demonstrates how machine learning can be integrated into a web application to provide useful analysis instead of only storing financial records.
+
+---
+
+## 👩‍💻 Author
 
 **Mahalakshmi S**
 
-B.Tech Artificial Intelligence & Data Science
-V.S.B College of Engineering & Technical Campus, Coimbatore
+B.Tech — Artificial Intelligence & Data Science
 
-GitHub:
-https://github.com/mahalakshmi2007-dot
+Tamil Nadu, India
 
-## 📌 Project Status
+* GitHub: https://github.com/mahalakshmi2007-dot
+* LinkedIn: https://linkedin.com/in/mahalakshmi-s-7aa78b36b
 
-**Current Status: Working Prototype**
+---
 
-The core expense management, dashboard, Machine Learning, forecasting, anomaly detection, and AI insight features have been implemented and tested.
+## 📄 License
+
+This project is created for educational and portfolio purposes.
