@@ -22,12 +22,13 @@ app = FastAPI(
     version="0.2.0",
 )
 
-# Allow the future React frontend (running on Vite's default port) to call this API.
+# Allowed frontend origins
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://spendwise-ai-lake.vercel.app",
 ]
 
 app.add_middleware(
@@ -47,24 +48,30 @@ app.include_router(ml.router)
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    """Return a clear 422 response when request data fails validation
-    (e.g. missing required fields, invalid dates, amount <= 0)."""
+    """Return a clear 422 response when request data fails validation."""
     return JSONResponse(
         status_code=422,
-        content={"detail": "Invalid request data.", "errors": exc.errors()},
+        content={
+            "detail": "Invalid request data.",
+            "errors": exc.errors(),
+        },
     )
 
 
 @app.exception_handler(Exception)
 async def generic_exception_handler(request: Request, exc: Exception):
-    """Catch-all handler so unexpected errors return clean JSON instead of a raw traceback."""
+    """Return clean JSON for unexpected server errors."""
     return JSONResponse(
         status_code=500,
-        content={"detail": f"Unexpected server error: {str(exc)}"},
+        content={
+            "detail": f"Unexpected server error: {str(exc)}"
+        },
     )
 
 
 @app.get("/")
 def root():
     """Simple health-check / welcome route."""
-    return {"message": "SpendWise AI backend is running. Visit /docs for API documentation."}
+    return {
+        "message": "SpendWise AI backend is running. Visit /docs for API documentation."
+    }
